@@ -39,7 +39,7 @@ class KeySearchDevice {
 public:
 
     // Initialize the device
-    virtual void init(const secp256k1::uint256 &start, int compression) = 0;
+    virtual void init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride) = 0;
 
     // Perform one iteration
     virtual void doStep() = 0;
@@ -51,13 +51,15 @@ public:
     virtual size_t getResults(std::vector<KeySearchResult> &results) = 0;
 
     // The number of keys searched at each step
-    virtual uint32_t keysPerIteration() = 0;
+    virtual uint64_t keysPerStep() = 0;
 
     // The name of the device
     virtual std::string getDeviceName() = 0;
 
     // Memory information for this device
     virtual void getMemoryInfo(uint64_t &freeMem, uint64_t &totalMem) = 0;
+
+    virtual secp256k1::uint256 getNextKey() = 0;
 };
 
 #endif

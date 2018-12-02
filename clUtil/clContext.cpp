@@ -1,6 +1,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cstring>
 
 #include "clContext.h"
 
@@ -44,7 +45,7 @@ cl_mem cl::CLContext::malloc(size_t size, cl_mem_flags flags)
     cl_int err = 0;
     cl_mem ptr = clCreateBuffer(_ctx, flags, size, NULL, &err);
     clCall(err);
-
+    this->memset(ptr, 0, size);
     return ptr;
 }
 
@@ -69,9 +70,9 @@ void cl::CLContext::copyDeviceToHost(cl_mem devicePtr, void *hostPtr, size_t siz
     clCall(clEnqueueReadBuffer(_queue, devicePtr, CL_TRUE, 0, size, hostPtr, 0, NULL, NULL));
 }
 
-void cl::CLContext::memset(cl_mem devicePtr, int value, size_t size)
+void cl::CLContext::memset(cl_mem devicePtr, unsigned char value, size_t size)
 {
-    clCall(clEnqueueFillBuffer(_queue, devicePtr, &value, sizeof(int), 0, size, NULL, NULL, NULL));
+    clCall(clEnqueueFillBuffer(_queue, devicePtr, &value, sizeof(unsigned char), 0, size, NULL, NULL, NULL));
 }
 
 cl::CLProgram::CLProgram(cl::CLContext &ctx, std::string srcFile) : _ctx(ctx)

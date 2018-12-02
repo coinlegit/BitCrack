@@ -63,13 +63,15 @@ private:
 
     uint32_t getPrivateKeyOffset(int thread, int block, int point);
 
+    secp256k1::uint256 _stride;
+
     bool verifyKey(const secp256k1::uint256 &privateKey, const secp256k1::ecpoint &publicKey, const unsigned int hash[5], bool compressed);
 
 public:
 
     CudaKeySearchDevice(int device, int threads, int pointsPerThread, int blocks = 0);
 
-    virtual void init(const secp256k1::uint256 &start, int compression);
+    virtual void init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride);
 
     virtual void doStep();
 
@@ -77,11 +79,13 @@ public:
 
     virtual size_t getResults(std::vector<KeySearchResult> &results);
 
-    virtual uint32_t keysPerIteration();
+    virtual uint64_t keysPerStep();
 
     virtual std::string getDeviceName();
 
     virtual void getMemoryInfo(uint64_t &freeMem, uint64_t &totalMem);
+
+    virtual secp256k1::uint256 getNextKey();
 };
 
 #endif
