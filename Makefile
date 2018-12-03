@@ -1,6 +1,6 @@
 
 CUR_DIR=$(shell pwd)
-DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
+DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger
 
 INCLUDE = $(foreach d, $(DIRS), -I$(CUR_DIR)/$d)
 
@@ -42,14 +42,14 @@ export OPENCL_INCLUDE
 export BUILD_OPENCL
 export BUILD_CUDA
 
-TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_secp256k1lib dir_util dir_logger
+TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_cudautil dir_secp256k1lib dir_util dir_logger
 
 ifeq ($(BUILD_CUDA),1)
 	TARGETS:=${TARGETS} dir_cudaKeySearchDevice dir_cudautil
 endif
 
 ifeq ($(BUILD_OPENCL),1)
-	TARGETS:=${TARGETS} dir_embedcl dir_clKeySearchDevice dir_clutil
+	TARGETS:=${TARGETS} dir_clKeySearchDevice dir_clutil
 endif
 
 all:	${TARGETS}
@@ -57,11 +57,8 @@ all:	${TARGETS}
 dir_cudaKeySearchDevice: dir_keyfinderlib dir_cudautil dir_logger
 	make --directory CudaKeySearchDevice
 
-dir_clKeySearchDevice: dir_embedcl dir_keyfinderlib dir_clutil dir_logger
+dir_clKeySearchDevice: dir_keyfinderlib dir_clutil dir_logger
 	make --directory CLKeySearchDevice
-
-dir_embedcl:
-	make --directory embedcl
 
 dir_addressutil:	dir_util dir_secp256k1lib dir_cryptoutil
 	make --directory AddressUtil
@@ -120,6 +117,6 @@ clean:
 	make --directory clUtil clean
 	make --directory CLKeySearchDevice clean
 	make --directory CudaKeySearchDevice clean
-	make --directory embedcl clean
+
 	rm -rf ${LIBDIR}
 	rm -rf ${BINDIR}
